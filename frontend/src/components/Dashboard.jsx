@@ -1,4 +1,3 @@
-//Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import { getAllTransactions, getTransactionsBySchool } from "../services/api";
@@ -44,20 +43,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     const filtered = transactions.filter((transaction) => {
+      if (!transaction) return false; // Check if the transaction is defined
       const matchesSearch =
-        transaction.collect_id
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        transaction.school_id
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        transaction.custom_order_id
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+        (transaction.collect_id &&
+          transaction.collect_id
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) ||
+        (transaction.school_id &&
+          transaction.school_id
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())) ||
+        (transaction.custom_order_id &&
+          transaction.custom_order_id
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()));
 
       const matchesStatus =
         statusFilter === "all" ||
-        transaction.status.toLowerCase() === statusFilter.toLowerCase();
+        (transaction.status &&
+          transaction.status.toLowerCase() === statusFilter.toLowerCase());
 
       return matchesSearch && matchesStatus;
     });
